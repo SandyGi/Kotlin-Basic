@@ -1,0 +1,360 @@
+Java 8 March 18th 2014
+
+1. *Lamda expression
+2. Functional Interface
+3. Default method in interface(Concrete method)
+4. Static method in interface
+5. Pre Define interfaces
+	a. Predicate
+	b. Function
+	c. Consumer
+6. Method reference and constructor reference by using double colon(::) operator
+7. *Stream API
+8. Date & Time API
+
+
+1. Lamda expression
+
+Features:	
+	a. We can enable functional programming in java
+	b. We can reduce lenght of the code so that readability will improved
+	c. We can resolve complexity of anonymous inner classes
+	d. We can handle procedure/functions just like value
+	e. We can pass procedure/functions as arguments
+	f. Esier to use update APIs and libraries
+	g. Enable support for parallel programming
+	
+
+Java 9 Sep 21st 2017
+
+1. JShell
+2. JPMS(Java plateform module system)
+3. JLinker(Java Linker)
+4. HTTP/2 Client API
+5. Process API Update
+6. Private method in interface
+7. Try with resource Enhencements
+8. Factory Method to create unmodifiable collection
+9. Stream API Enhencements
+10. <>(Diamond operator came in 1.7) Enhencements
+11. Safe varargs annotation
+12. GIGC(Garbage first garbage collector)
+
+
+Kotlin
+1. String interpolation
+2. Ranges 
+	var r1 = 1..5 // this range contains the number 1,2,3,4,5
+	var r2 = 5 downTo 1 // this range contains the number 5,4,3,2,1, && RangeTo for increasing order
+	var r3 = 5 downTo 1 step 2 // this range contains the number 5, 3, 1
+
+1. Extension Function
+	a. Add funtion with predefine classes like Int, String.. etc
+	b. Reduce code and clean
+	c. It can be become part of our own define class
+	d. Can add functions to a class without declearing it
+	e. Its behave like static function
+	
+2. Infix Function
+	a. it can be a member funtion or extension funtion
+	b. they have single parameter
+	c. using prefix "Infix"
+	d. All Infix funtion are expression funtion but all Extension functions are not Infix funtion
+	e. syntax :
+		value_1 function_name value_2// In expression funtion =>(value_1) function_name(value_2)
+
+3. TaiRec Function
+	a. Uses recursion in more optio mize way
+	b. Prevent Stack Overflow Exception
+	c. Achive using prefix "tailrec"
+	
+4. Contructor
+	a. Primary Contructor
+		Syntax:
+		class Student(var name: String) // Primary Contructor, primary constructor has no body so we can use init block as a primary constructor body
+			{
+				init{ // 
+					// other initialization
+				}
+			}
+	
+	c. Secondary Contructor // it has own body
+		Syntax:
+		class Student(var name: String) // Primary Contructor, primary constructor has no body so we can use init block as a primary constructor body
+			{
+				init{ // 
+					// other initialization
+				}
+				
+				constructor(name: String, id: Int): this(name)// in the secondary constructor we can't decleare property as parameter like=> var id: Int
+				{
+					// The body of secondary constructor is called after the init block
+					// Body
+				}
+			}
+5. Modifires
+	a. public 
+	b. private -> same class 
+	c. internal -> same module
+	d. protected -> not application for top level functions // only derive class
+
+6. Object // We decleare perticular out the class
+	a. Declare as object
+		Syntax:
+		object Customer // variable and method working like static
+			{
+				var id: Int = -1 // Behaving as static variable 
+				
+				fun registerCustomer() // Behaving as static method
+				{
+							// Body
+				}
+				
+			}
+	b. When we use keyword "object" Kotlin internally creates a class and an instance/object
+	c. These objects have:	
+		i. Can have properties, methods and initializers
+		ii. Can have constructor as we create object/instance manually 
+	d. "object" can also have super class and support inheritance 
+
+7. Companion Object // We decleare perticular within the class
+	Syntax:
+	class Customer {
+			companion object // va
+				{
+					var id: Int = -1 // Behaving as static variable
+					
+					@jvmStatic
+					fun registerCustomer() // Behaving as static method 
+					{
+								// Body
+					}
+					
+				}
+		}
+
+8. Lambdas and High Level Functions
+	Example 1:
+	
+	fun main(args: Array<String>) {
+
+		val program = Program()
+		program.addTowNumbers(2, 7) // Simple way .. for better understanding
+
+		program.addTowNumbers(2, 7, object : MyInterface { // Using interface
+			override fun execute(sum: Int) {
+	//            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+				println("Using Interface $sum")
+			}
+		})
+
+		val myLambda: (Int) -> Unit = { s: Int -> println("Using Lambda $s") }
+		program.addTowNumbers(2, 7, myLambda)
+	}
+
+	class Program {
+
+		fun addTowNumbers(x: Int, y: Int, action: (Int) -> Unit) { // Simple way .. just for better understanding
+			val sum = x + y
+			action(sum)
+		}
+
+		fun addTowNumbers(x: Int, y: Int, action: MyInterface) { // Using interface .. OOPs way
+			val sum = x + y
+			action.execute(sum)
+		}
+
+		fun addTowNumbers(x: Int, y: Int) { // Simple way .. just for better understanding
+			val sum = x + y
+			println("Simple Way $sum")
+		}
+
+	}
+
+	interface MyInterface {
+		fun execute(sum: Int)
+	}
+	
+	Example 2:
+	fun main(args: Array<String>) {
+
+			val program = ProgramText()
+		//    val myLambda: (Int, Int) -> Int = { x: Int, y: Int -> x + y } // OR
+		//    program.addTowNumbers(2, 7, { x: Int, y: Int -> x + y }) // OR
+			program.addTowNumbers(2, 7) { x: Int, y: Int -> x + y } // Lambda expression
+	}
+
+	class ProgramText {
+
+		fun addTowNumbers(x: Int, y: Int, action: (Int, Int) -> Int) { // High level function with lambda
+			val result = action(x, y)
+			println(result)
+		}
+	}
+	
+	a. Closures
+		i. In java 8 you can't mutate (change) value of outside variable inside lambda
+		ii. But in kotlin you can change the values
+		
+	fun main(args: Array<String>) {
+
+			val program = ProgramText()
+			var result = 0 // outside variable
+			
+			program.addTowNumbers(2, 7) { x: Int, y: Int -> result = x + y } // Lambda expression
+	}
+
+	class ProgramText {
+
+		fun addTowNumbers(x: Int, y: Int, action: (Int, Int) -> Unit) { // High level function with lambda
+			val result = action(x, y)
+			println(result)
+		}
+	}
+	
+	b. "it" Implicit name for Single Parameter in Lambdas
+		
+	fun main(args: Array<String>) {
+
+			val program = ProgramText()
+			
+			program.reverseAndDisplay("hello", {it.reversed()})
+	}
+
+	class ProgramText {
+
+		fun reverseAndDisplay(str: String, myFuc: (String) -> String) { // High level function with lambda
+			val result = myFuc(str)
+			println(result) // output ==> olleh
+		}
+	}
+
+	c. WITH and APPLY. Lambdas and High Level Func
+
+9. Collections Introduction and ARRAYS in Kotlin
+	Array : Mutable but has fixed size
+	Collection
+		-> Immutable Collection : Read Only Operatoins
+			i. Immutable List : listOf
+			ii. Immutable Map : mapOf
+			iii. Immutable Set : setOf
+		-> Mutable Collection : Read and Write
+			i. Mutable List : ArrayList, arrayListOf, mutableListOf
+			ii. Mutable Map : HashMap, hashMapOf, mutableMapOf
+			iii. Mutable Set : HashSet, hashSetOf, mutableSetOf
+
+10. Delegation
+	a. Kotlin supports “delegation” design pattern by introducing a new keyword “by”. Using this keyword or delegation methodology, 
+		Kotlin allows the derived class to access all the implemented public methods of an interface through a specific object.
+	b. Delegation means passing the responsibility to another class or method.
+		When a property is already declared in some places, then we should reuse the same code to initialize them. 
+		
+		Example:
+		interface Base {
+		   fun printMe() //abstract method
+			}
+			class BaseImpl(val x: Int) : Base {
+			   override fun printMe() { println(x) }   //implementation of the method
+			}
+			class Derived(b: Base) : Base by b  // delegating the public method on the object b
+
+			fun main(args: Array<String>) {
+			   val b = BaseImpl(10)
+			   Derived(b).printMe() // prints 10 :: accessing the printMe() method 
+		}
+
+11. Kotlin and some standard library function while implementing delegation in our examples.
+	A. Using Lazy()
+		a. Lazy is a lambda function which takes a property as an input and in return gives an instance of Lazy<T>, where <T> is basically the type of the properties it is using.
+	B. Delegetion.Observable()
+		Observable() takes two arguments to initialize the object and returns the same to the called function.
+		In the following example, we will see how to use Observable() method in order to implement delegation.
+		
+12. Multi-Catch 
+		Sometimes we need to handle more than one
+			exception in a single catch block:
+		
+		try {
+		// some code
+		} catch (e: ExceptionA|ExceptionB) {
+		log(e);
+		throw e;
+		}
+
+13. Overloadable operators | and &
+	Kotlin has || and && for booleans. These operators can not be overloaded, because of
+	their short-circuit semantics: right-hand side of ||, for example, won’t be evaluated is
+	the left-hand side is already true.
+	
+	Overloadable operators | and &, wtih no short-circuit semantics (both sides will be evaluated regardless) could be useful for DSLs as well as traditional bitwise operations on intergers.
+	
+	fun test() {
+	task1 | task2
+	}class Task {
+	operator fun or(other: Task) = /* pipe output of this into other */
+	}
+	fun test() {
+	task1 | task2
+	}
+	
+14. Short notation for enum constants
+
+15. Private members accessible from Tests
+
+16. Support package- private visibility
+	In Kotlin packages are namespaces and not visibility scopes.
+	Modules, on the other hand, are visibility scopes and not namespaces. So, there’s internal visibility (visible inside a module), but no package-private
+
+17. Collection literals
+
+18. Collection Comprehesions
+
+19. Slices for list and arrays
+
+20. Inline classes/ Value classes
+
+21. Format strings
+
+22. Optional(Trailing) Commas
+
+23. Unsigned arthmatic 
+
+24. SAM conversions for kotlin interface
+
+25. Annotations for static analyses 
+
+26. Destructuring assignment
+
+27. Use invokedynamic to compile kotlin
+
+28. Static members for kotlin classes
+
+29. Truly immutable data
+
+30. Subject variable in when
+
+31. Vararg-like treatment of data classes
+
+32. Conceptual Coroutines => it just like light-weight thread, Shared mutable state 	
+	1. Suspend
+	2. launch{}
+	3. launch(UI){}
+	4. async/ await
+	5. coroutine builder
+	6. runBlocking
+	7. future
+	8. delay
+	9. Job 
+	10. Deferred
+
+	A. Continuation-Passing Style == Callback
+	
+	B. Suspending functions
+	suspend fun createPost(token: Token, item: Item):Post{...} => Java/JVM=> object createPost(token: Token, item: Item, Continuation<Post> cont) {....}
+	Continuation<Post> cont => Callback and Continuation is generic callback interface
+	
+	C. Coroutines Context
+	D. Job Cancellation 
+	E. Cooperative cancellation
+	
+	
